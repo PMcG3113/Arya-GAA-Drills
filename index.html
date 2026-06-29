@@ -202,6 +202,42 @@
   .iconbtn{width:34px;height:34px;border-radius:9px;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .iconbtn svg{width:16px;height:16px}
   .row-actions{display:flex;gap:6px}
+  /* ---------- rest line + rest button ---------- */
+  .item .rest{color:var(--gold)}
+  .rest-btn{display:inline-flex;align-items:center;gap:6px;height:42px;padding:0 14px;border-radius:11px;background:var(--bg2);border:1px dashed var(--line);font-weight:800;font-size:13px;color:var(--gold)}
+  .rest-btn svg{width:15px;height:15px}
+
+  /* ---------- header timer button ---------- */
+  .h-timer{width:38px;height:38px;border-radius:11px;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-left:10px}
+  .h-timer svg{width:20px;height:20px;color:var(--text)}
+
+  /* ---------- timer overlay ---------- */
+  #timerOv{position:fixed;inset:0;z-index:70;display:none;background:var(--bg)}
+  #timerOv.open{display:flex;flex-direction:column;padding-top:var(--safe-top);padding-bottom:var(--safe-bot)}
+  #timerOv .t-head{display:flex;align-items:center;gap:10px;padding:14px 16px 4px}
+  #timerOv .t-ttl{font-weight:800;font-size:18px}
+  #timerOv .t-close{margin-left:auto;width:42px;height:42px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:18px;font-weight:800;color:var(--text)}
+  #timerOv .t-modes{display:flex;gap:8px;padding:6px 16px 4px}
+  #timerOv .t-modes button{flex:1;padding:11px 4px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:800;font-size:13px;color:var(--muted)}
+  #timerOv .t-modes button.on{background:var(--accent);border-color:var(--accent);color:#06210f}
+  #timerOv .t-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:14px 18px 24px;overflow:auto}
+  .t-ring{--p:100;--col:var(--accent);width:236px;height:236px;border-radius:50%;flex:0 0 auto;
+    background:conic-gradient(var(--col) calc(var(--p)*1%), var(--line) 0);display:flex;align-items:center;justify-content:center;transition:background .15s linear}
+  .t-ring i{width:204px;height:204px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-style:normal}
+  .t-ring.work{--col:var(--accent)} .t-ring.rest{--col:var(--gold)}
+  .t-phase{font-size:14px;font-weight:800;letter-spacing:.1em;color:var(--muted)}
+  .t-big{font-variant-numeric:tabular-nums;font-size:60px;font-weight:800;line-height:1;letter-spacing:-.02em}
+  .t-sub{font-size:13px;color:var(--muted);font-weight:700;max-width:200px;text-align:center}
+  .t-presets{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .t-presets button{padding:10px 14px;border-radius:11px;background:var(--card);border:1px solid var(--line);font-weight:800;color:var(--text)}
+  .t-fields{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .t-fields .tf{text-align:center}
+  .t-fields label{display:block;font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;margin-bottom:6px}
+  .t-fields input{width:88px;text-align:center;padding:13px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:19px;font-weight:800}
+  .t-controls{display:flex;gap:10px;width:100%;max-width:360px}
+  .t-controls .btn{flex:1;height:54px;font-size:17px}
+  #timerOv.flash .t-ring{animation:tflash .45s ease 0s 3}
+  @keyframes tflash{50%{background:var(--gold)}}
 </style>
 </head>
 <body>
@@ -250,6 +286,9 @@
         <div class="h-sub" id="hSub">Skills · Agility · Run</div>
       </div>
       <div class="view-name" id="hView"></div>
+      <button class="h-timer" id="hTimer" title="Timer" aria-label="Timer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6M18.5 5.5L20 4"/></svg>
+      </button>
     </div>
   </header>
 
@@ -283,6 +322,7 @@
 
 <!-- ===================== MODAL + TOAST ===================== -->
 <div id="ov"><div id="mbox"></div></div>
+<div id="timerOv"></div>
 <div id="toast"><div class="in"></div></div>
 
 <!-- Firebase SDK (compat build = simple, readable API), same versions as Bubbli -->
@@ -517,17 +557,24 @@ function boot(fromJoin){
   });
 }
 
+function restForCat(cat){ return cat==="run"?0 : cat==="agility"?75 : 45; }
+
 function seedSpace(name,pin){
   const days={};
   SEED.planDays.forEach(d=>{
     days[d.day]={ focus:d.focus, rest:!!d.rest, items:(d.items||[]).map(it=>({
       iid: it.libId, libId: it.libId, sets: it.sets, reps: (it.reps==null?null:it.reps),
-      durationSec: (it.durationSec==null?null:it.durationSec), note: it.note||""
+      durationSec: (it.durationSec==null?null:it.durationSec), restSec:null, note: it.note||""
     }))};
   });
+  const library={};
+  Object.keys(SEED.library).forEach(id=>{
+    const it=SEED.library[id];
+    library[id]={ ...it, restSec: (it.restSec!=null? it.restSec : restForCat(it.category)) };
+  });
   const payload = {
-    meta:{ athleteName:name, coachPin:String(pin), createdAt:TS, seedVersion:1 },
-    library: SEED.library,
+    meta:{ athleteName:name, coachPin:String(pin), createdAt:TS, seedVersion:2 },
+    library,
     plan:{ days },
     tests: SEED.tests
   };
@@ -660,16 +707,20 @@ function renderToday(m){
   items.forEach(it=>{
     const lib=(S.data.library||{})[it.libId]||{};
     const cat=lib.category||"football";
+    const type=lib.type||"reps";
     const name=lib.name||it.libId;
     const cues=lib.cues||[];
     const meta=itemMetaStr(it,lib);
+    const restSec=(it.restSec!=null?it.restSec:(lib.restSec!=null?lib.restSec:0));
+    const dur=(it.durationSec||lib.durationSec||0);
+    const showRest = restSec>0 && cat!=="run" && (it.sets||1)>1;
     const card=el(`<div class="card item">
       <div class="top">
         <span class="pill" style="background:${catColor(cat)};color:#06210f">${(CATS[cat]||{}).label||cat}</span>
         <button class="watch"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Watch</button>
       </div>
       <div class="name">${esc(name)}</div>
-      <div class="meta">${meta}</div>
+      <div class="meta">${meta}${showRest?` · <span class="rest">rest ${fmtRest(restSec)}</span>`:""}</div>
       ${it.note?`<div class="note">💡 ${esc(it.note)}</div>`:""}
       <div class="sets"></div>
       ${cues.length?`<details class="cues"><summary>Coaching cues</summary><ul>${cues.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></details>`:""}
@@ -687,11 +738,26 @@ function renderToday(m){
       setsWrap.appendChild(ck);
     } else {
       const n=it.sets||1;
+      const timed = type==="time" && dur>0;
       for(let i=0;i<n;i++){
         const done=isSetDone(day,it.iid,i);
-        const b=el(`<button class="set ${done?'done':''}">${done?'<svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 6"/></svg>':("Set "+(i+1))}</button>`);
-        b.onclick=()=>toggleSet(day,it.iid,i);
+        const label = done ? '<svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 6"/></svg>'
+                     : timed ? ('▶ '+fmtRest(dur)) : ('Set '+(i+1));
+        const b=el(`<button class="set ${done?'done':''}">${label}</button>`);
+        b.onclick=()=>{
+          if(timed && !isSetDone(day,it.iid,i)){
+            openTimer({ mode:"countdown", seconds:dur, autostart:true, label:name+" · set "+(i+1),
+              onComplete:()=>{ if(!isSetDone(day,it.iid,i)) toggleSet(day,it.iid,i); } });
+          } else {
+            toggleSet(day,it.iid,i);
+          }
+        };
         setsWrap.appendChild(b);
+      }
+      if(showRest){
+        const rb=el(`<button class="rest-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/></svg>Rest ${fmtRest(restSec)}</button>`);
+        rb.onclick=()=>openTimer({ mode:"countdown", seconds:restSec, autostart:true, label:"Rest · "+name });
+        setsWrap.appendChild(rb);
       }
     }
     m.appendChild(card);
@@ -1092,10 +1158,11 @@ function editPlanItem(day,idx,it,lib){
   const fields=[{key:"sets",label:"Sets",type:"number",value:it.sets||1}];
   if(type==="reps") fields.push({key:"reps",label:"Reps per set",type:"number",value:it.reps||lib.reps||10});
   if(type==="time") fields.push({key:"durationSec",label:"Duration (seconds)",type:"number",value:it.durationSec||lib.durationSec||30});
+  if(type!=="distance") fields.push({key:"restSec",label:"Rest between sets (seconds)",type:"number",value:(it.restSec!=null?it.restSec:(lib.restSec!=null?lib.restSec:""))});
   fields.push({key:"note",label:"Note (optional)",type:"text",value:it.note||""});
   openForm("Edit: "+(lib.name||it.libId),fields,(v)=>{
     const items=dayItems(day).slice();
-    items[idx]={ ...it, sets:parseInt(v.sets)||1, reps: type==="reps"?(parseInt(v.reps)||null):null, durationSec: type==="time"?(parseInt(v.durationSec)||null):null, note:v.note||"" };
+    items[idx]={ ...it, sets:parseInt(v.sets)||1, reps: type==="reps"?(parseInt(v.reps)||null):null, durationSec: type==="time"?(parseInt(v.durationSec)||null):null, restSec: (v.restSec!==undefined&&v.restSec!=="")?(parseInt(v.restSec)||0):null, note:v.note||"" };
     db.ref("spaces/"+S.code+"/plan/days/"+day+"/items").set(items); toast("Saved");
   });
 }
@@ -1130,6 +1197,7 @@ function editLibraryItem(l){
     {key:"reps",label:"Default reps (reps type)",type:"number",value:l.reps||""},
     {key:"durationSec",label:"Default seconds (time type)",type:"number",value:l.durationSec||""},
     {key:"distanceKm",label:"Distance km (distance type)",type:"number",value:l.distanceKm||"",step:"0.1"},
+    {key:"restSec",label:"Rest between sets (seconds)",type:"number",value:l.restSec||""},
     {key:"cues",label:"Coaching cues (one per line)",type:"textarea",value:(l.cues||[]).join("\n")},
     {key:"video",label:"YouTube video URL (optional — overrides search)",type:"text",value:l.video||""},
     {key:"search",label:"YouTube search URL",type:"text",value:l.search||""}
@@ -1140,6 +1208,7 @@ function editLibraryItem(l){
       sets:parseInt(v.sets)||1,
       reps: v.type==="reps"?(parseInt(v.reps)||null):null,
       durationSec: v.type==="time"?(parseInt(v.durationSec)||null):null,
+      restSec: (v.restSec!=="")?(parseInt(v.restSec)||0):null,
       cues: v.cues?v.cues.split("\n").map(s=>s.trim()).filter(Boolean):[],
       video: v.video||null,
       search: v.search|| ("https://www.youtube.com/results?search_query="+encodeURIComponent(v.name+" technique")) };
@@ -1255,6 +1324,168 @@ function openForm(title,fields,onSave){
 
 // keep stopwatch ticking smoothly while on Run view
 window.addEventListener("focus",()=>{ if(S.sw.running) updateSwDisplay(); });
+
+/* ============================================================
+   8) TIMER — countdown / interval / stopwatch overlay
+   ============================================================ */
+const TV = $("timerOv");
+S.tmr = { mode:"countdown", running:false, id:null, label:"", onComplete:null, audio:null,
+  cd:{ total:60, remain:60, endAt:0, lastCue:99 },
+  sw:{ acc:0, start:0 },
+  iv:{ work:30, rest:20, rounds:6, phase:"work", round:1, remain:30, endAt:0 } };
+
+function fmtRest(s){ s=Math.round(s); if(s<60) return s+"s"; const m=Math.floor(s/60), ss=s%60; return ss? (m+":"+String(ss).padStart(2,"0")) : (m+" min"); }
+function fmtMS(sec){ sec=Math.max(0,Math.ceil(sec)); const m=Math.floor(sec/60), s=sec%60; return m+":"+String(s).padStart(2,"0"); }
+
+function tAudio(){
+  try{
+    if(!S.tmr.audio) S.tmr.audio = new (window.AudioContext||window.webkitAudioContext)();
+    if(S.tmr.audio.state==="suspended") S.tmr.audio.resume();
+  }catch(e){}
+  return S.tmr.audio;
+}
+function beep(freq,dur,vol){
+  const ac=S.tmr.audio; if(!ac) return;
+  try{
+    const o=ac.createOscillator(), g=ac.createGain();
+    o.type="sine"; o.frequency.value=freq||880; g.gain.value=(vol==null?0.18:vol);
+    o.connect(g); g.connect(ac.destination);
+    const t=ac.currentTime; o.start(t); o.stop(t+(dur||0.12));
+  }catch(e){}
+}
+function cueDone(){ beep(880,0.16); setTimeout(()=>beep(1100,0.16),190); setTimeout(()=>beep(1320,0.4),380); }
+function flash(){ TV.classList.add("flash"); setTimeout(()=>TV.classList.remove("flash"),1500); }
+
+function openTimer(opts){
+  opts=opts||{};
+  tStopEngine();
+  if(opts.mode) S.tmr.mode=opts.mode;
+  S.tmr.label=opts.label||"";
+  S.tmr.onComplete=opts.onComplete||null;
+  if(opts.seconds){ S.tmr.mode="countdown"; S.tmr.cd.total=opts.seconds; S.tmr.cd.remain=opts.seconds; }
+  S.tmr.running=false;
+  TV.classList.add("open"); TV.classList.remove("flash");
+  renderTimer();
+  if(opts.autostart) tStart();
+}
+function closeTimer(){ tStopEngine(); S.tmr.running=false; TV.classList.remove("open","flash"); }
+window.closeTimer=closeTimer;
+function tStopEngine(){ if(S.tmr.id){ clearInterval(S.tmr.id); S.tmr.id=null; } }
+
+function renderTimer(){
+  const m=S.tmr.mode, r=S.tmr.running;
+  let body="";
+  if(m==="stopwatch"){
+    const ms=r?(Date.now()-S.tmr.sw.start):S.tmr.sw.acc;
+    body=`<div class="t-ring" style="--p:100"><i><div class="t-big" id="tBig">${fmtClock(ms)}</div><div class="t-sub">stopwatch</div></i></div>`;
+  } else if(m==="countdown"){
+    const tot=S.tmr.cd.total, rem=S.tmr.cd.remain, p=tot?Math.max(0,rem/tot*100):0;
+    body=`<div class="t-ring" id="tRing" style="--p:${p}"><i><div class="t-big" id="tBig">${fmtMS(rem)}</div><div class="t-sub">${S.tmr.label?esc(S.tmr.label):"countdown"}</div></i></div>`;
+    if(!r){
+      body+=`<div class="t-presets">`+[15,30,45,60,120,180].map(s=>`<button data-sec="${s}">${fmtRest(s)}</button>`).join("")+`</div>`;
+      body+=`<div class="t-fields"><div class="tf"><label>Min</label><input id="tMin" type="number" inputmode="numeric" value="${Math.floor(tot/60)}"></div><div class="tf"><label>Sec</label><input id="tSec" type="number" inputmode="numeric" value="${tot%60}"></div></div>`;
+    }
+  } else { // interval
+    const iv=S.tmr.iv;
+    if(!r){
+      body=`<div class="t-fields">
+        <div class="tf"><label>Work s</label><input id="ivWork" type="number" inputmode="numeric" value="${iv.work}"></div>
+        <div class="tf"><label>Rest s</label><input id="ivRest" type="number" inputmode="numeric" value="${iv.rest}"></div>
+        <div class="tf"><label>Rounds</label><input id="ivRounds" type="number" inputmode="numeric" value="${iv.rounds}"></div>
+      </div><div class="t-sub">Set work / rest / rounds, then Start. Beeps on every switch.</div>`;
+    } else {
+      const tot=iv.phase==="work"?iv.work:iv.rest, p=tot?Math.max(0,iv.remain/tot*100):0;
+      body=`<div class="t-ring ${iv.phase}" id="tRing" style="--p:${p}"><i><div class="t-phase" id="tPhase">${iv.phase==="work"?"WORK":"REST"}</div><div class="t-big" id="tBig">${fmtMS(iv.remain)}</div><div class="t-sub">Round ${iv.round} / ${iv.rounds}</div></i></div>`;
+    }
+  }
+  const controls=`<div class="t-controls"><button class="btn" id="tStart">${r?"Pause":"Start"}</button><button class="btn sec" id="tReset">Reset</button></div>`;
+  TV.innerHTML=`
+    <div class="t-head"><div class="t-ttl">⏱ Timer</div><button class="t-close" id="tClose">✕</button></div>
+    <div class="t-modes">
+      <button data-m="countdown" class="${m==='countdown'?'on':''}">Countdown</button>
+      <button data-m="interval" class="${m==='interval'?'on':''}">Interval</button>
+      <button data-m="stopwatch" class="${m==='stopwatch'?'on':''}">Stopwatch</button>
+    </div>
+    <div class="t-body">${body}${controls}</div>`;
+  $("tClose").onclick=closeTimer;
+  TV.querySelectorAll(".t-modes button").forEach(b=>b.onclick=()=>{ if(S.tmr.running) return; S.tmr.mode=b.dataset.m; S.tmr.onComplete=null; S.tmr.label=""; renderTimer(); });
+  const sb=$("tStart"); if(sb) sb.onclick=()=>{ S.tmr.running?tPause():tStart(); };
+  const rb=$("tReset"); if(rb) rb.onclick=tReset;
+  TV.querySelectorAll(".t-presets button").forEach(b=>b.onclick=()=>{ const s=parseInt(b.dataset.sec); S.tmr.cd.total=s; S.tmr.cd.remain=s; renderTimer(); });
+}
+
+function readInputs(){
+  if(S.tmr.mode==="countdown"){
+    const mn=parseInt(($("tMin")||{}).value)||0, sc=parseInt(($("tSec")||{}).value)||0, tot=Math.max(1,mn*60+sc);
+    if($("tMin")){ S.tmr.cd.total=tot; S.tmr.cd.remain=tot; }
+  } else if(S.tmr.mode==="interval"){
+    if($("ivWork")){
+      S.tmr.iv.work=Math.max(1,parseInt($("ivWork").value)||30);
+      S.tmr.iv.rest=Math.max(0,parseInt(($("ivRest")||{}).value)||0);
+      S.tmr.iv.rounds=Math.max(1,parseInt(($("ivRounds")||{}).value)||1);
+      S.tmr.iv.phase="work"; S.tmr.iv.round=1; S.tmr.iv.remain=S.tmr.iv.work;
+    }
+  }
+}
+function tStart(){
+  tAudio(); readInputs();
+  const now=Date.now();
+  if(S.tmr.mode==="stopwatch"){ S.tmr.sw.start=now-S.tmr.sw.acc; }
+  else if(S.tmr.mode==="countdown"){ if(S.tmr.cd.remain<=0) S.tmr.cd.remain=S.tmr.cd.total; S.tmr.cd.endAt=now+S.tmr.cd.remain*1000; S.tmr.cd.lastCue=Math.ceil(S.tmr.cd.remain)+1; }
+  else if(S.tmr.mode==="interval"){ if(S.tmr.iv.remain<=0){ S.tmr.iv.remain=S.tmr.iv.work; } S.tmr.iv.endAt=now+S.tmr.iv.remain*1000; beep(1046,0.18); }
+  S.tmr.running=true; tStopEngine(); S.tmr.id=setInterval(tTick,100); renderTimer();
+}
+function tPause(){
+  const now=Date.now();
+  if(S.tmr.mode==="stopwatch"){ S.tmr.sw.acc=now-S.tmr.sw.start; }
+  else if(S.tmr.mode==="countdown"){ S.tmr.cd.remain=Math.max(0,(S.tmr.cd.endAt-now)/1000); }
+  else if(S.tmr.mode==="interval"){ S.tmr.iv.remain=Math.max(0,(S.tmr.iv.endAt-now)/1000); }
+  S.tmr.running=false; tStopEngine(); renderTimer();
+}
+function tReset(){
+  tStopEngine(); S.tmr.running=false;
+  if(S.tmr.mode==="stopwatch"){ S.tmr.sw.acc=0; }
+  else if(S.tmr.mode==="countdown"){ S.tmr.cd.remain=S.tmr.cd.total; }
+  else if(S.tmr.mode==="interval"){ S.tmr.iv.phase="work"; S.tmr.iv.round=1; S.tmr.iv.remain=S.tmr.iv.work; }
+  renderTimer();
+}
+function tFace(rem,tot){
+  const big=$("tBig"); if(big) big.textContent=fmtMS(rem);
+  const ring=$("tRing"); if(ring) ring.style.setProperty("--p", tot?Math.max(0,rem/tot*100):0);
+}
+function tTick(){
+  const now=Date.now();
+  if(S.tmr.mode==="stopwatch"){ const b=$("tBig"); if(b) b.textContent=fmtClock(now-S.tmr.sw.start); return; }
+  if(S.tmr.mode==="countdown"){
+    let rem=(S.tmr.cd.endAt-now)/1000;
+    if(rem<=0){ S.tmr.cd.remain=0; tStopEngine(); S.tmr.running=false; cueDone(); flash(); const cb=S.tmr.onComplete; renderTimer(); if(cb){ try{cb();}catch(e){} } return; }
+    S.tmr.cd.remain=rem;
+    const whole=Math.ceil(rem);
+    if(whole<=3 && whole<S.tmr.cd.lastCue){ S.tmr.cd.lastCue=whole; beep(880,0.1); }
+    tFace(rem,S.tmr.cd.total); return;
+  }
+  if(S.tmr.mode==="interval"){
+    let rem=(S.tmr.iv.endAt-now)/1000;
+    if(rem<=0){ advanceInterval(now); return; }
+    S.tmr.iv.remain=rem;
+    tFace(rem, S.tmr.iv.phase==="work"?S.tmr.iv.work:S.tmr.iv.rest); return;
+  }
+}
+function advanceInterval(now){
+  const iv=S.tmr.iv;
+  if(iv.phase==="work"){
+    if(iv.round>=iv.rounds){ // finished the final work bout
+      tStopEngine(); S.tmr.running=false; iv.phase="work"; iv.round=1; iv.remain=iv.work; cueDone(); flash(); renderTimer(); return;
+    }
+    if(iv.rest>0){ iv.phase="rest"; iv.remain=iv.rest; iv.endAt=now+iv.rest*1000; beep(660,0.2); renderTimer(); return; }
+    iv.round++; iv.remain=iv.work; iv.endAt=now+iv.work*1000; beep(1046,0.18); renderTimer(); return;
+  }
+  // finished a rest → next work round
+  iv.round++; iv.phase="work"; iv.remain=iv.work; iv.endAt=now+iv.work*1000; beep(1046,0.18); renderTimer();
+}
+
+// header timer button
+$("hTimer").onclick=()=>openTimer({});
 </script>
 </body>
 </html>

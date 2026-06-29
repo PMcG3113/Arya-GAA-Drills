@@ -59,7 +59,11 @@ Same as Bubbli:
 
 ## Using it
 
-- **Today** — her plan for each day. She ticks off each set as she does it.
+- **Today** — her plan for each day. She ticks off each set as she does it. Timed drills
+  show a **▶ duration** button that launches a countdown (and auto-ticks the set when it ends),
+  and multi-set drills show a **Rest** button + the rest time between sets.
+- **Timer** (⏱ in the top bar) — a built-in **Countdown**, **Interval** (work/rest × rounds,
+  with beeps on every switch — great for agility/fartlek), and **Stopwatch**, usable anytime.
 - **Run** — a big stopwatch to time the 3.6 km run; logs time + pace, charts progress.
 - **Tests** — the pre/post agility baseline tests (sprint, 5-10-5, broad jump…). Record a
   **Pre** result now, train the block, then a **Post** result to see the improvement.
@@ -71,5 +75,7 @@ Same as Bubbli:
 
 - Every skill links to a YouTube **search** (always works). In Coach mode you can paste a
   specific video URL for any skill to make it one-tap.
+- Each skill has a **rest between sets** time (editable per skill in Coach mode, and per day on
+  a plan item). The seeded defaults are ~45s for skills and ~75s for agility — tweak to taste.
 - "Re-seed defaults" in Coach mode restores the original plan/skills if you want a clean slate.
 - Back up anytime with **Export** in Coach mode (downloads a JSON file).
