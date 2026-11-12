@@ -21,7 +21,7 @@
     --card:#18233a; --card2:#1f2c47; --line:#2a3a5c;
     --text:#eaf0fb; --muted:#93a4c4; --muted2:#6f82a6;
     --accent:#21c95e; --accent-d:#16a34a; --gold:#ffc54d;
-    --c-football:#34d399; --c-camogie:#f472b6; --c-agility:#a78bfa; --c-run:#fbbf24;
+    --c-football:#34d399; --c-camogie:#f472b6; --c-agility:#a78bfa; --c-run:#fbbf24; --c-rugby:#ff6b3d;
     --danger:#f87171;
     --r:18px; --r-sm:12px;
     --safe-top:env(safe-area-inset-top,0px);
@@ -87,7 +87,7 @@
   nav.tabs .inner{display:flex;max-width:680px;margin:0 auto}
   nav.tabs button{flex:1;padding:9px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted2);font-size:11px;font-weight:700}
   nav.tabs button svg{width:23px;height:23px}
-  nav.tabs button.active{color:var(--accent)}
+  nav.tabs button.active{color:var(--c-rugby)}
 
   /* ---------- Cards ---------- */
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:12px}
@@ -202,6 +202,30 @@
   .iconbtn{width:34px;height:34px;border-radius:9px;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .iconbtn svg{width:16px;height:16px}
   .row-actions{display:flex;gap:6px}
+  /* ---------- rugby tab ---------- */
+  .seg{display:flex;gap:8px;margin:6px 0 12px}
+  .seg button{flex:1;padding:12px 4px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:800;font-size:14px;color:var(--muted)}
+  .seg button.on{background:var(--c-rugby);border-color:var(--c-rugby);color:#2a0d00}
+  .rg .set.done{background:var(--c-rugby);border-color:var(--c-rugby);color:#2a0d00}
+  .rg .ring{background:conic-gradient(var(--c-rugby) calc(var(--p)*1%), var(--line) 0)}
+  .rg-cue{margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(255,107,61,.13);border:1px solid rgba(255,107,61,.45);font-weight:800;font-size:15px}
+  .rg-cue small{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c-rugby);margin-bottom:2px}
+  .rg-hero{border:none;color:#fff;background:linear-gradient(135deg,#ff6b3d,#e11d74);box-shadow:0 12px 34px rgba(255,107,61,.28)}
+  .rg-hero .lbl{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+  .rg-hero .big{font-size:25px;font-weight:800;line-height:1.2;margin:6px 0 4px;letter-spacing:-.02em}
+  .rg-hero .word{font-size:46px;font-weight:800;line-height:1;margin:8px 0 6px;letter-spacing:.02em}
+  .rg-hero .sub{font-size:13px;opacity:.92}
+  .rg-hero .btn{background:#fff;color:#2a0d00}
+  .rg-hero .btn.alt{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.55)}
+  .rg-stack{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .rg-pick{width:100%;text-align:left;padding:13px 14px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);font-weight:700;font-size:15px;color:var(--text)}
+  .rg-pick:active{border-color:var(--c-rugby)}
+  .rg-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .rg-chips button{padding:10px 15px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);font-weight:800;color:var(--text)}
+  .rg-flames{letter-spacing:2px}
+  .rg-count{display:inline-block;padding:8px 13px;border-radius:999px;background:rgba(0,0,0,.22);font-weight:800;font-size:13px}
+  .stat.tap{cursor:pointer}
+
   /* ---------- rest line + rest button ---------- */
   .item .rest{color:var(--gold)}
   .rest-btn{display:inline-flex;align-items:center;gap:6px;height:42px;padding:0 14px;border-radius:11px;background:var(--bg2);border:1px dashed var(--line);font-weight:800;font-size:13px;color:var(--gold)}
@@ -256,7 +280,7 @@
 <div id="join" class="screen">
   <div class="box">
     <h1>Arya's Playbook</h1>
-    <p class="lead">Skills · Agility · Run — synced between your phone and hers.</p>
+    <p class="lead">Back yourself · Speed · Run — synced between your phone and hers.</p>
     <div class="field">
       <label>Athlete name</label>
       <input id="jName" value="Arya" autocomplete="off" />
@@ -283,7 +307,7 @@
       <div class="emblem"><svg viewBox="0 0 180 180"><path d="M90 30l16 34 38 5-27 26 7 38-34-18-34 18 7-38-27-26 38-5z" fill="#0e1525"/></svg></div>
       <div>
         <div class="h-ttl" id="hTitle">Arya's Playbook</div>
-        <div class="h-sub" id="hSub">Skills · Agility · Run</div>
+        <div class="h-sub" id="hSub">Back yourself</div>
       </div>
       <div class="view-name" id="hView"></div>
       <button class="h-timer" id="hTimer" title="Timer" aria-label="Timer">
@@ -296,21 +320,17 @@
 
   <nav class="tabs">
     <div class="inner">
-      <button data-v="today" class="active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
-        Today
+      <button data-v="me" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-1.800.7-3 1.700-4 .3 1.500 1.300 2.500 2.300 2.500C12 9 10.500 6.500 12 3z"/></svg>
+        Me
+      </button>
+      <button data-v="speed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2L5 13.500h6L10 22l9-12h-6.500z"/></svg>
+        Speed
       </button>
       <button data-v="run">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         Run
-      </button>
-      <button data-v="tests">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3v18M5 4h11l-2 4 2 4H5"/></svg>
-        Tests
-      </button>
-      <button data-v="progress">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 16l3-4 3 3 4-7"/></svg>
-        Progress
       </button>
       <button data-v="coach">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
@@ -480,9 +500,10 @@ const CATS = {
 
 const S = {
   code:null, me:null, coach:false,
-  view:"today",
+  view:"me",
   selDay: todayKey(),
-  data:{ meta:null, library:{}, plan:{days:{}}, tests:{}, weeks:{}, runs:{}, results:{} },
+  data:{ meta:null, library:{}, plan:{days:{}}, tests:{}, weeks:{}, runs:{}, results:{}, rugby:{} },
+  rugbyTab:"speed", rugbyDate:null,
   sw:{ running:false, acc:0, start:0, timer:null, distance:3.6 },
   refs:[]
 };
@@ -597,7 +618,7 @@ function attachListeners(){
     S.refs.push({ref,fn});
   };
   bind("meta","meta"); bind("library","library"); bind("plan","plan");
-  bind("tests","tests"); bind("weeks","weeks"); bind("runs","runs"); bind("results","results");
+  bind("tests","tests"); bind("weeks","weeks"); bind("runs","runs"); bind("results","results"); bind("rugby","rugby"); bind("planBackup","planBackup");
 }
 
 let booted=false, loadedKeys={};
@@ -606,11 +627,12 @@ function tryEnter(){
   if(S.data.meta && S.data.library && S.data.plan){ if(!booted){ booted=true; enterApp(); } }
 }
 function shouldRerender(key){
-  if(S.view==="today") return ["plan","library","weeks","meta"].includes(key);
+  if(S.view==="today") return ["plan","library","weeks","meta","rugby"].includes(key);
+  if(S.view==="me"||S.view==="speed") return ["rugby","results","tests"].includes(key);
   if(S.view==="run") return ["runs","meta"].includes(key);
   if(S.view==="tests") return ["tests","results"].includes(key);
-  if(S.view==="progress") return ["plan","weeks","runs","results","tests","meta"].includes(key);
-  if(S.view==="coach") return ["plan","library","tests","meta"].includes(key);
+  if(S.view==="progress") return ["plan","weeks","runs","results","tests","meta","rugby"].includes(key);
+  if(S.view==="coach") return ["plan","library","tests","meta","rugby","planBackup"].includes(key);
   return true;
 }
 
@@ -632,7 +654,7 @@ document.querySelectorAll("nav.tabs button").forEach(b=>{
 });
 function switchView(v){
   if(v==="coach" && !S.coach){ promptPin(); return; }
-  S.view=v; S.selDay = (v==="today")? S.selDay : S.selDay;
+  S.view=v; if(v==="speed") S.rugbyDate=null;
   document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));
   window.scrollTo(0,0);
   render();
@@ -644,9 +666,11 @@ function switchView(v){
 function render(){
   headerNames();
   const m=$("main");
-  const viewName={today:"This week",run:"Running",tests:"Baseline tests",progress:"Progress",coach:"Coach mode"};
+  const viewName={me:"",speed:"Speed",today:"This week",run:"Running",tests:"Baseline tests",progress:"Progress",coach:"Coach mode"};
   $("hView").textContent=viewName[S.view]||"";
   if(S.view==="today") renderToday(m);
+  else if(S.view==="me") renderMe(m);
+  else if(S.view==="speed") renderSpeedView(m);
   else if(S.view==="run") renderRun(m);
   else if(S.view==="tests") renderTests(m);
   else if(S.view==="progress") renderProgress(m);
@@ -663,6 +687,7 @@ function isSetDone(day,iid,idx){ const dd=weekDone()[day]; return !!(dd&&dd[iid]
 function dayProgress(day){
   const items=dayItems(day); let total=0,done=0;
   items.forEach(it=>{ const n=it.sets||1; total+=n; for(let i=0;i<n;i++) if(isSetDone(day,it.iid,i)) done++; });
+  if(rgDays().includes(day)){ const rp=rgSessionProgress(dateOfDay(day)); total+=rp.total; done+=rp.done; }
   return {total,done};
 }
 
@@ -695,8 +720,30 @@ function renderToday(m){
     </div></div>`);
   m.appendChild(head);
 
+  const sprintDay=rgDays().includes(day);
+  if(sprintDay){
+    const sd=dateOfDay(day), rp=rgSessionProgress(sd), rpct=Math.round(rp.done/rp.total*100);
+    const sc=el(`<div class="card item rg" style="border-color:var(--c-rugby)">
+      <div class="top"><span class="pill" style="background:var(--c-rugby);color:#2a0d00">Rugby</span>
+        <span class="mini" style="margin-left:auto">Do this first, on fresh legs</span></div>
+      <div class="day-head" style="margin:4px 0 0">
+        <div class="ring" style="--p:${rpct}"><i>${rpct}%</i></div>
+        <div><div class="name">Sprint session</div><div class="meta">About 20 min · ${rp.done}/${rp.total} done</div></div>
+      </div>
+      <div class="note">💡 Match tomorrow? Skip this one and save your legs.</div>
+      <div class="sets"><button class="btn sm" style="height:42px;background:var(--c-rugby);color:#2a0d00">${rp.done===0?"▶ Start session":rp.done>=rp.total?"✓ Done · open":"▶ Keep going"}</button></div>
+    </div>`);
+    sc.querySelector("button").onclick=()=>{ switchView("speed"); S.rugbyDate=sd; render(); };
+    m.appendChild(sc);
+  }
+
   if(dObj.rest || items.length===0){
-    m.appendChild(el(`<div class="card" style="text-align:center">
+    if(sprintDay) return;
+    m.appendChild(el(dObj.club? `<div class="card" style="text-align:center">
+      <div style="font-size:34px">💪</div>
+      <div style="font-weight:800;margin-top:6px">Club day</div>
+      <div class="mini" style="margin-top:4px">Your club session is today's training. Nothing extra from the Playbook. Give it everything there.</div>
+    </div>` : `<div class="card" style="text-align:center">
       <div style="font-size:34px">🌙</div>
       <div style="font-weight:800;margin-top:6px">Rest / recovery day</div>
       <div class="mini" style="margin-top:4px">Light stretching, hydrate, sleep well. Recovery is when you get stronger.</div>
@@ -777,6 +824,346 @@ function toggleSet(day,iid,idx){
   const cur=isSetDone(day,iid,idx);
   ref.set(cur?null:true);
   if(navigator.vibrate) navigator.vibrate(cur?8:18);
+}
+
+/* ---------- RUGBY: sprint speed + "back yourself" ----------
+   Content lives here in code (not in the seeded library), so it
+   shows up in an existing space with no re-seed. Synced data sits
+   under spaces/<code>/rugby : { goWord, speed/<date>/<block>/<rep>, brave/<id> }
+   ------------------------------------------------------------ */
+const YT = (q)=>"https://www.youtube.com/results?search_query="+encodeURIComponent(q);
+const RUGBY = {
+  session:[
+    {id:"warm",name:"Warm-up",meta:"about 5 minutes",rest:0,
+      reps:["A-march 10m","A-march 10m","A-skip 10m","A-skip 10m","Build-up 20m","Build-up 20m"],
+      cue:"Knee up, toe up",
+      how:["A-march: walk tall, lift one knee to hip height with toes pulled up, then swap","A-skip: the same shape with a little skip in it","Build-ups: start at a jog and finish fast, but never flat out"],
+      search:YT("A march A skip sprint drill technique youth athletes")},
+    {id:"wall",name:"Wall drive",meta:"3 sets × 5 fast switches",rest:30,
+      reps:["Set 1","Set 2","Set 3"],
+      cue:"Push the wall over",
+      how:["Hands on a wall, arms straight, body leaning like a ramp","One knee up, toe up. Straight line from your head to your back heel","Switch legs as fast as you can 5 times without your hips dropping"],
+      search:YT("wall drill sprint acceleration technique youth")},
+    {id:"fall",name:"Falling starts",meta:"4 × 10m",rest:60,
+      reps:["Sprint 1","Sprint 2","Sprint 3","Sprint 4"],
+      cue:"Push the ground away behind you",
+      how:["Stand tall with your feet together","Lean forward from your ankles until you have to run","Explode out with 5 or 6 hard, driving steps and stay low"],
+      search:YT("falling start sprint acceleration drill")},
+    {id:"getup",name:"Get-up starts",meta:"4 × 10m, a different start each time",rest:60,
+      reps:["On your front","On your back","From one knee","Facing backwards"],
+      cue:"Big fast arms: hip to lip",
+      how:["Rugby sprints start from the ground, so these do too","Someone shouts GO, or count yourself in 3-2-1","Get up and get to top speed as fast as you can"],
+      search:YT("sprint starts from different positions reaction drill rugby")},
+    {id:"ball",name:"Ball in hand",meta:"3 × 20m",rest:90,
+      reps:["Two hands","Left arm","Right arm"],
+      cue:"Run like the ball isn't there",
+      how:["Two hands: ball out in front of your chest, still pumping side to side","One arm: tuck the ball tight, and the free arm drives hard","Same lean, same push as your falling starts"],
+      search:YT("rugby running with the ball in two hands sprint technique")},
+    {id:"gap",name:"Take the gap (1v1)",meta:"5 goes · needs a partner",rest:45,optional:true,
+      reps:["Go 1","Go 2","Go 3","Go 4","Go 5"],
+      cue:"Pick your side and commit. No slowing down",
+      how:["Mark a channel 5 big steps wide and 10 long","You carry the ball. Your partner defends with a two-hand touch","Decide early which side you are going and hit it at full speed","Getting caught going flat out is a good go. Slowing down is the only wrong answer","No partner today? Skip it, or race your own best time over 20m"],
+      search:YT("rugby 1v1 attack drill beat the defender footwork kids")}
+  ],
+  sessionNotes:[
+    "Once or twice a week, on a day with no club training. Friday is ideal. Match tomorrow? Skip it.",
+    "Do it fresh, at the start, on grass. Speed work on tired legs just teaches slow running.",
+    "Walk back and wait until your breathing is normal before the next sprint. If you are puffing, rest longer.",
+    "One cue at a time. Think about that one thing and nothing else.",
+    "Sore knees, heels or anything sharp: stop for the day."
+  ],
+  goWords:["GO","NOW","MINE","ATTACK","FLY","SEND IT"],
+  braveIdeas:[
+    "Go flat out for the first 5 minutes",
+    "Show my speed: win one race I'm not sure I can win",
+    "Call for the ball, loud",
+    "Take someone on 1v1",
+    "Try one thing I might get wrong",
+    "Be first to every loose ball",
+    "Attack first instead of waiting"
+  ],
+  remember:[
+    "You are fast. Really fast. Speed only counts when you use it.",
+    "Backing yourself doesn't mean being sure it will work. It means going for it anyway.",
+    "Nobody remembers the mistake. They remember the girl who went for it.",
+    "Every good player got good by going flat out and getting it wrong lots of times.",
+    "Butterflies and excitement feel exactly the same in your body. Butterflies mean you are ready.",
+    "You only need one brave thing. Not ten. One.",
+    "Your team would rather you try something and lose it than hide and never get it."
+  ],
+  coachNotes:[
+    "Swap telling for spotting. 'Back yourself' from the sideline also says 'I think you aren't'. Afterwards, add one specific thing you saw her go for to her Proof wall instead.",
+    "Belief follows evidence, not the other way round. She won't feel confident and then act. She acts once, sees the proof, and then starts to feel it. The wall is the proof.",
+    "Before every training or match, one question only: 'What's your one brave thing today?' She picks. Then leave it.",
+    "After, ask only about that one thing. Praise the decision, never the result. 'I loved that you went for it' matters most when it didn't come off.",
+    "The car ride home is hers. 'I love watching you play' is enough.",
+    "She is quick and doesn't show it, so the speed challenge is the one to nudge: one race per game that she isn't sure she can win.",
+    "If it doesn't shift, find out why she holds back: fear of contact, fear of mistakes, or not being sure what to do. Ask, don't guess. Each needs a different fix.",
+    "The sprint session is hers to do when fresh, once or twice a week. Her times going on the wall is proof too, so re-test 10m and 20m every 3 weeks."
+  ]
+};
+
+/* Off-season week: club sport carries the load, the Playbook adds only
+   what the clubs don't give her (sprint technique, landing/cutting, one run). */
+const OFFSEASON = {
+  planDays:[
+    {day:"mon",focus:"Rugby training",rest:true,club:true,items:[]},
+    {day:"tue",focus:"Hockey",rest:true,club:true,items:[]},
+    {day:"wed",focus:"Rugby training",rest:true,club:true,items:[]},
+    {day:"thu",focus:"BJJ",rest:true,club:true,items:[]},
+    {day:"fri",focus:"Main home session: sprint + sidestep and landing",rest:false,items:[
+      {libId:"deceleration-cutting-drill",sets:3,reps:3,note:"This is your sidestep. Slam the brakes, then explode out the other way."},
+      {libId:"cone-zig-zag-cod",sets:3,reps:4,note:"Carry a rugby ball in two hands."},
+      {libId:"broad-jump-stick",sets:3,reps:3,note:"Stick every landing for two seconds. Match tomorrow? Skip the jumps."}]},
+    {day:"sat",focus:"3.6 km run, or game day",rest:false,items:[
+      {libId:"race-distance-3-6km",sets:1,reps:null,note:"Game this weekend? Skip the run. The game is your running."}]},
+    {day:"sun",focus:"Game day or full rest",rest:true,items:[]}
+  ],
+  coachNotes:[
+    "The week is built on her club sport: rugby Monday and Wednesday, hockey Tuesday straight after school, BJJ Thursday, and a game at the weekend. The Playbook only adds what those don't give her: sprint technique, landing and cutting, and one steady run.",
+    "Four club sessions and a game is already a full week for a 12-13 year old. If she is tired, sore or flat, drop the Playbook work first. It is the extra, not the base.",
+    "She needs one day a week with nothing on. On a game weekend that is the other weekend day, so the Saturday run is skipped. On a free weekend it is Sunday.",
+    "Friday is the only day she is properly fresh, so it holds the quality work. If the game is Saturday, keep Friday to the skills at most, or skip it.",
+    "Jumping, cutting and sprinting belong on grass in boots or supportive trainers. Stop a set as soon as landings get noisy or knees start caving in.",
+    "Persistent pain below the kneecap or at the heel is common during growth spurts. Ease off, rest, and see a GP or physio if it lingers.",
+    "Sleep and food do more for her speed than any drill. Something eaten a couple of hours before training, and water through the day.",
+    "Football and camogie skills are still in the library. Add them back to days in Coach mode when the season returns, or restore the saved plan."
+  ]
+};
+function offseasonDays(){
+  const days={};
+  OFFSEASON.planDays.forEach(d=>{
+    days[d.day]={ focus:d.focus, rest:!!d.rest, club:!!d.club, items:(d.items||[]).map(it=>({
+      iid:it.libId, libId:it.libId, sets:it.sets, reps:(it.reps==null?null:it.reps), durationSec:null, restSec:null, note:it.note||"" })) };
+  });
+  return days;
+}
+
+function rg(){ return S.data.rugby||{}; }
+const RG_DEFAULT_DAYS=["fri"];   // around rugby Mon/Wed, BJJ Thu, weekend games
+function rgDays(){ const d=rg().days; return d? DAYS.filter(k=>d[k]) : RG_DEFAULT_DAYS; }
+function dateOfDay(dk,ref){   // ISO date of that weekday in the (Mon-Sun) week containing ref
+  const d=new Date(ref||new Date()); d.setDate(d.getDate()-((d.getDay()+6)%7)+DAYS.indexOf(dk));
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function rgRef(path){ return db.ref("spaces/"+S.code+"/rugby/"+path); }
+function rgIsDone(date,bid,idx){ const d=((rg().speed||{})[date]||{})[bid]; return !!(d&&d[idx]); }
+function rgSessionProgress(date){
+  let total=0,done=0;
+  RUGBY.session.forEach(b=>{ if(b.optional) return; total+=b.reps.length; b.reps.forEach((_,i)=>{ if(rgIsDone(date,b.id,i)) done++; }); });
+  return {total,done};
+}
+function rgSessionDates(){   // dates where most of the core session was done
+  return Object.keys(rg().speed||{}).filter(d=>{ const p=rgSessionProgress(d); return p.done/p.total>=0.6; }).sort();
+}
+function rgBrave(){ return Object.entries(rg().brave||{}).map(([id,b])=>({id,...b})); }
+function rgBest(testId){
+  const res=testResults(testId); if(!res.length) return null;
+  return Math.min(...res.map(r=>r.value));
+}
+
+const SPORTS=["Rugby","Hockey","BJJ","Other"];
+function rgWins(){ return Object.entries(rg().wins||{}).map(([id,x])=>({id,...x})); }
+function sportOpts(){ return SPORTS.map(s=>[s,s]); }
+
+/* ---------- ME: the home screen. Mindset first, any sport. ---------- */
+function renderMe(m){
+  m.innerHTML="";
+  const w=el(`<div class="rg"></div>`); m.appendChild(w);
+  const all=rgBrave();
+  const open=all.filter(b=>!b.result).sort((a,b)=>(a.createdISO<b.createdISO?1:-1))[0]||null;
+  const hist=all.filter(b=>b.result);
+  const word=rg().goWord||"";
+
+  // --- go word ---
+  if(word){
+    const c=el(`<div class="card rg-hero" style="text-align:center">
+      <div class="lbl">My go word</div>
+      <div class="word">${esc(word)}</div>
+      <div class="sub">Say it in your head the second it's your moment.</div>
+      <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:12px;flex-wrap:wrap">
+        <span class="rg-count">🔥 ${hist.length} time${hist.length===1?"":"s"} I went for it</span>
+        <button class="btn sm alt">Change word</button>
+      </div>
+    </div>`);
+    c.querySelector("button").onclick=()=>rgPickWord(word);
+    w.appendChild(c);
+  } else {
+    const c=el(`<div class="card">
+      <div style="font-weight:800;font-size:17px">Pick your go word</div>
+      <div class="mini" style="margin-top:2px">One word you say in your head when it's your moment. It switches off the thinking and switches on the doing.</div>
+      <div class="rg-chips">${RUGBY.goWords.map(g=>`<button data-w="${esc(g)}">${esc(g)}</button>`).join("")}<button data-w="">My own…</button></div>
+    </div>`);
+    c.querySelectorAll("button").forEach(b=>b.onclick=()=>{ if(b.dataset.w){ rgRef("goWord").set(b.dataset.w); toast("Go word set"); } else rgPickWord(""); });
+    w.appendChild(c);
+  }
+
+  // --- one brave thing ---
+  w.appendChild(el(`<div class="section-h"><h2>One brave thing</h2><div class="line"></div></div>`));
+  if(open){
+    const where=open.sport&&open.sport!=="Other"? ("Next "+open.sport) : "Next time";
+    const c=el(`<div class="card rg-hero">
+      <div class="lbl">${esc(where)}, I will</div>
+      <div class="big">${esc(open.text)}</div>
+      <div class="sub">Just this one thing. It doesn't have to work. You just have to go for it.</div>
+      <div class="rg-stack">
+        <div class="lbl" style="margin-top:6px">Afterwards: did you go for it?</div>
+        <button class="btn full" data-r="yes">🔥 Yes, I went for it</button>
+        <button class="btn full alt" data-r="half">I half went for it</button>
+        <button class="btn full alt" data-r="no">Not this time</button>
+      </div>
+      <button class="btn sm alt" data-r="swap" style="margin-top:12px">Pick a different one</button>
+    </div>`);
+    c.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      const r=b.dataset.r;
+      if(r==="no"){ toast("No stress. It's still here for next time"); return; }
+      if(r==="swap"){ rgRef("brave/"+open.id).remove(); return; }
+      rgLogBrave(open,r);
+    });
+    w.appendChild(c);
+  } else {
+    const c=el(`<div class="card">
+      <div style="font-weight:800;font-size:17px">Pick one brave thing for your next training or match</div>
+      <div class="mini" style="margin-top:2px">Only one. Something a bit scary that you would love to do.</div>
+      <div class="rg-stack">${RUGBY.braveIdeas.map((t,i)=>`<button class="rg-pick" data-i="${i}">${esc(t)}</button>`).join("")}
+        <button class="rg-pick" data-i="-1" style="border-style:dashed;color:var(--c-rugby)">✏️ Write my own</button></div>
+    </div>`);
+    c.querySelectorAll(".rg-pick").forEach(b=>b.onclick=()=>{
+      const i=parseInt(b.dataset.i);
+      openForm("Lock it in",[
+        {key:"text",label:"I will…",type:"text",value:i>=0?RUGBY.braveIdeas[i]:""},
+        {key:"sport",label:"Where?",type:"select",value:rg().lastSport||"Rugby",options:sportOpts()}
+      ],(v)=>{ const t=(v.text||"").trim(); if(!t){ toast("Write your brave thing"); return false; }
+        rgRef("brave").push({ text:t, sport:v.sport, createdISO:todayISO(), createdAt:TS }); rgRef("lastSport").set(v.sport); toast("Locked in 🔥"); });
+    });
+    w.appendChild(c);
+  }
+
+  // --- proof wall: belief comes from evidence ---
+  w.appendChild(el(`<div class="section-h"><h2>Proof I can</h2><div class="line"></div></div>`));
+  const items=[];
+  hist.forEach(b=>items.push({kind:"brave",id:b.id,date:b.doneISO||"",icon:"🔥",title:b.text,
+    sub:[b.sport&&b.sport!=="Other"?b.sport:null, b.result==="yes"?"Went for it":"Half went for it", b.well?("Did well: "+b.well):null].filter(Boolean).join(" · "),
+    flames:b.effort?("🔥".repeat(Math.max(1,Math.min(5,b.effort)))):""}));
+  rgWins().forEach(x=>items.push({kind:"wins",id:x.id,date:x.dateISO||"",icon:x.by==="coach"?"👀":"⭐",
+    title:(x.by==="coach"?"Spotted: ":"")+x.text, sub:x.sport&&x.sport!=="Other"?x.sport:"", flames:""}));
+  items.sort((a,b)=>(a.date<b.date?1:-1));
+  const wall=el(`<div class="card"></div>`);
+  const b10=rgBest("sprint-10m");
+  if(b10!=null) wall.appendChild(el(`<div class="row-item"><div style="font-size:22px">⚡</div><div class="ri-main"><div class="ri-t">I run 10 metres in ${b10}s</div><div class="ri-s">That is fast. Use it.</div></div></div>`));
+  if(!items.length && b10==null) wall.appendChild(el(`<div class="empty" style="padding:14px 6px">Every time you go for it, it lands here. This is your proof.</div>`));
+  items.slice(0,40).forEach(it=>{
+    const row=el(`<div class="row-item"><div style="font-size:22px">${it.icon}</div>
+      <div class="ri-main"><div class="ri-t">${esc(it.title)}</div>
+        <div class="ri-s">${esc(longDate(it.date))}${it.sub?(" · "+esc(it.sub)):""}</div>
+        ${it.flames?`<div class="ri-s rg-flames">${it.flames}</div>`:""}</div>
+      <button class="iconbtn del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button></div>`);
+    row.querySelector(".del").onclick=()=>{ if(confirm("Take this off your wall?")) rgRef(it.kind+"/"+it.id).remove(); };
+    wall.appendChild(row);
+  });
+  const add=el(`<button class="btn sm sec" style="margin-top:12px">⭐ Add something I did</button>`);
+  add.onclick=()=>rgAddWin("me");
+  wall.appendChild(add);
+  w.appendChild(wall);
+
+  // --- one thought, changes daily ---
+  const doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/86400000);
+  w.appendChild(el(`<div class="card" style="border-color:var(--c-rugby)"><div class="rg-cue" style="margin:0;border:none;background:none;padding:0"><small>Remember</small>${esc(RUGBY.remember[doy%RUGBY.remember.length])}</div></div>`));
+}
+
+function rgAddWin(by){
+  openForm(by==="coach"?"Spotted":"Something I did",[
+    {key:"text",label:by==="coach"?"What did you see her go for?":"What did you do or try?",type:"text",value:""},
+    {key:"sport",label:"Where?",type:"select",value:rg().lastSport||"Rugby",options:sportOpts()}
+  ],(v)=>{ const t=(v.text||"").trim(); if(!t){ toast("Write it down first"); return false; }
+    rgRef("wins").push({ text:t, sport:v.sport, by, dateISO:todayISO(), createdAt:TS }); toast(by==="coach"?"Added to her wall":"On the wall ⭐"); });
+}
+function rgPickWord(cur){
+  openForm("My go word",[{key:"word",label:"One word (or two)",type:"text",value:cur||""}],(v)=>{
+    const wd=(v.word||"").trim().toUpperCase().slice(0,14);
+    if(!wd){ toast("Type a word"); return false; }
+    rgRef("goWord").set(wd); toast("Go word set");
+  });
+}
+function rgLogBrave(b,result){
+  openForm(result==="yes"?"You went for it 🔥":"Half counts",[
+    {key:"effort",label:"How flat out were you?",type:"select",value:result==="yes"?"4":"3",options:[["1","1 · jogging"],["2","2 · a bit"],["3","3 · pretty hard"],["4","4 · really went"],["5","5 · everything I had"]]},
+    {key:"well",label:"One thing I did well (optional)",type:"text",value:""}
+  ],(v)=>{
+    rgRef("brave/"+b.id).update({ result, effort:parseInt(v.effort)||null, well:(v.well||"").trim(), doneISO:todayISO() });
+    toast(result==="yes"?"That's backing yourself 🔥":"Next time, all the way");
+  });
+}
+
+/* ---------- SPEED: the sprint session, no calendar ---------- */
+function renderSpeedView(m){
+  m.innerHTML="";
+  const w=el(`<div class="rg"></div>`); m.appendChild(w);
+  renderRugbySpeed(w);
+}
+
+function renderRugbySpeed(w){
+  const date=S.rugbyDate||todayISO();
+  const p=rgSessionProgress(date);
+  const pct=Math.round(p.done/p.total*100);
+  const dates=rgSessionDates();
+  const last=dates.length?dates[dates.length-1]:null;
+  w.appendChild(el(`<div class="card"><div class="day-head">
+      <div class="ring" style="--p:${pct}"><i>${pct}%</i></div>
+      <div><h2>Sprint session</h2><div class="fx">About 20 minutes · once or twice a week · ${rgSessionDates().filter(x=>isoWeek(new Date(x+"T00:00:00"))===weekId()).length} done this week</div>
+        ${date!==todayISO()?`<div class="mini" style="margin-top:3px;color:var(--c-rugby);font-weight:800">Ticking off ${esc(longDate(date))}'s session</div>`:""}
+        <div class="mini" style="margin-top:3px">${dates.length} session${dates.length===1?"":"s"} done${last?(" · last "+esc(longDate(last))):""}</div></div>
+    </div>
+    <details class="cues"><summary>Before you start</summary><ul>${RUGBY.sessionNotes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></details>
+  </div>`));
+
+  RUGBY.session.forEach((b,bi)=>{
+    const card=el(`<div class="card item">
+      <div class="top">
+        <span class="pill" style="background:var(--c-rugby);color:#2a0d00">${bi+1} of ${RUGBY.session.length}${b.optional?" · bonus":""}</span>
+        <button class="watch"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Watch</button>
+      </div>
+      <div class="name">${esc(b.name)}</div>
+      <div class="meta">${esc(b.meta)}${b.rest?` · <span class="rest">rest ${fmtRest(b.rest)}</span>`:""}</div>
+      <div class="rg-cue"><small>Think about one thing</small>${esc(b.cue)}</div>
+      <div class="sets"></div>
+      <details class="cues"><summary>How to do it</summary><ul>${b.how.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></details>
+    </div>`);
+    card.querySelector(".watch").onclick=()=>window.open(b.search,"_blank");
+    const sets=card.querySelector(".sets");
+    b.reps.forEach((label,i)=>{
+      const done=rgIsDone(date,b.id,i);
+      const btn=el(`<button class="set ${done?"done":""}">${done?'<svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 6"/></svg>':""}${esc(label)}</button>`);
+      btn.onclick=()=>{
+        rgRef("speed/"+date+"/"+b.id+"/"+i).set(done?null:true);
+        if(navigator.vibrate) navigator.vibrate(done?8:18);
+      };
+      sets.appendChild(btn);
+    });
+    if(b.rest){
+      const rb=el(`<button class="rest-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/></svg>Rest ${fmtRest(b.rest)}</button>`);
+      rb.onclick=()=>openTimer({ mode:"countdown", seconds:b.rest, autostart:true, label:"Rest · "+b.name });
+      sets.appendChild(rb);
+    }
+    w.appendChild(card);
+  });
+
+  // sprint times, pulled from the existing baseline tests
+  const b10=rgBest("sprint-10m"), b20=rgBest("sprint-20m");
+  const tc=el(`<div class="card">
+    <div style="font-weight:800">Am I getting faster?</div>
+    <div class="mini" style="margin-top:2px">Time your 10m and 20m every 3 weeks, on fresh legs.</div>
+    <div style="display:flex;gap:22px;margin-top:10px">
+      <div><div class="ri-v" style="text-align:left;font-size:22px">${b10!=null?b10+"s":"—"}</div><div class="mini">Best 10m</div></div>
+      <div><div class="ri-v" style="text-align:left;font-size:22px">${b20!=null?b20+"s":"—"}</div><div class="mini">Best 20m</div></div>
+    </div>
+    <div class="sets"><button class="btn sm sec" data-t="sprint-10m">Record 10m</button><button class="btn sm sec" data-t="sprint-20m">Record 20m</button></div>
+    <details class="cues"><summary>How to time it</summary><div class="mini" style="margin-top:8px;color:var(--text)">Mark the distance on flat grass. Standing start, no run-up. Someone times from your first movement to your chest crossing the line. Best of 3, with 2 minutes rest between.</div></details>
+  </div>`);
+  tc.querySelectorAll("button[data-t]").forEach(bt=>bt.onclick=()=>{ const t=(S.data.tests||{})[bt.dataset.t]; if(t) recordTest(t); else toast("That test was removed. Add it back in Coach mode"); });
+  const r10=testResults("sprint-10m");
+  if(r10.length>=2) tc.appendChild(el(`<div style="margin-top:10px">${lineChartSVG(r10.map(r=>({label:shortDate(r.dateISO),value:r.value})),{fmt:(v)=>v+"s",lowerIsBetter:true})}<div class="mini" style="text-align:center">10m time (lower is faster)</div></div>`));
+  w.appendChild(tc);
 }
 
 /* ---------- RUN ---------- */
@@ -975,7 +1362,7 @@ function showTestHistory(t,res){
 function renderProgress(m){
   m.innerHTML="";
   // this week
-  const items=DAYS.reduce((a,dk)=>a+dayItems(dk).reduce((s,it)=>s+(it.sets||1),0),0);
+  const items=DAYS.reduce((a,dk)=>a+dayProgress(dk).total,0);
   let done=0,daysTrained=0;
   DAYS.forEach(dk=>{ const p=dayProgress(dk); done+=p.done; if(p.done>0) daysTrained++; });
   const pct=items?Math.round(done/items*100):0;
@@ -1026,7 +1413,7 @@ function renderProgress(m){
 
   // coach & safety notes
   m.appendChild(el(`<div class="section-h"><h2>Coach &amp; safety notes</h2><div class="line"></div></div>`));
-  m.appendChild(el(`<div class="card"><ul class="note-list" style="margin:0;padding-left:18px">${SEED.coachNotes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`));
+  m.appendChild(el(`<div class="card"><ul class="note-list" style="margin:0;padding-left:18px">${((S.data.plan||{}).variant==="offseason"?OFFSEASON.coachNotes:SEED.coachNotes).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`));
 }
 
 function lastWeeksCompletion(n){
@@ -1038,7 +1425,8 @@ function lastWeeksCompletion(n){
     const wd=((S.data.weeks||{})[wid]||{}).done||{};
     // total planned for the (current) plan
     let total=0,done=0;
-    DAYS.forEach(dk=>{ dayItems(dk).forEach(it=>{ const ns=it.sets||1; total+=ns; const dd=wd[dk]&&wd[dk][it.iid]; if(dd){ for(let k=0;k<ns;k++) if(dd[k]) done++; } }); });
+    DAYS.forEach(dk=>{ dayItems(dk).forEach(it=>{ const ns=it.sets||1; total+=ns; const dd=wd[dk]&&wd[dk][it.iid]; if(dd){ for(let k=0;k<ns;k++) if(dd[k]) done++; } });
+      if(rgDays().includes(dk)){ const rp=rgSessionProgress(dateOfDay(dk,d)); total+=rp.total; done+=rp.done; } });
     out.push({label:wid.split("-W")[1]?("W"+wid.split("-W")[1]):wid, value: total?Math.round(done/total*100):0});
   }
   return out;
@@ -1067,8 +1455,54 @@ function renderCoach(m){
   $("cCopy").onclick=()=>{ navigator.clipboard&&navigator.clipboard.writeText(S.code); toast("Code copied"); };
   $("cPin").onclick=()=>openForm("Change coach PIN",[{key:"pin",label:"New PIN",type:"text",value:""}],(v)=>{ if(!v.pin){toast("Enter a PIN");return false;} db.ref("spaces/"+S.code+"/meta/coachPin").set(String(v.pin)); toast("PIN updated"); });
 
+  // spotting + notes (PIN-gated, so these are for the coach only)
+  m.appendChild(el(`<div class="section-h"><h2>Spotted</h2><div class="line"></div></div>`));
+  const spot=el(`<div class="card" style="border-color:var(--c-rugby)">
+    <div style="font-weight:800">Saw her go for something?</div>
+    <div class="mini" style="margin-top:2px">Add it and it lands on her Proof wall. Say what she did, not how it turned out: "You raced their winger to that ball."</div>
+    <button class="btn sm" style="margin-top:12px;background:var(--c-rugby);color:#2a0d00">👀 Add to her wall</button>
+  </div>`);
+  spot.querySelector("button").onclick=()=>rgAddWin("coach");
+  m.appendChild(spot);
+  m.appendChild(el(`<div class="card"><details class="cues" style="border-top:none;margin-top:0;padding-top:0"><summary>How to help her back herself</summary>
+    <ul>${RUGBY.coachNotes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></details></div>`));
+
+  // everything from the old skills calendar lives in here, out of the way
+  const adv=el(`<details class="card" ${S.coachAdv?"open":""}><summary style="font-weight:800;cursor:pointer">Old week plan, skills library and tests</summary>
+    <div class="mini" style="margin:6px 0 10px">Not in her tabs this season. Still here for when football and camogie come back.</div>
+    <div class="sets" style="margin:0 0 6px"><button class="btn sm sec" data-go="today">Open week view</button><button class="btn sm sec" data-go="tests">Open tests</button><button class="btn sm sec" data-go="progress">Open progress</button></div>
+    <div class="advbody"></div></details>`);
+  adv.addEventListener("toggle",()=>{ S.coachAdv=adv.open; });
+  adv.querySelectorAll("[data-go]").forEach(bt=>bt.onclick=()=>switchView(bt.dataset.go));
+  m.appendChild(adv);
+  const mMain=m; m=adv.querySelector(".advbody");
+
   // weekly plan editor
   m.appendChild(el(`<div class="section-h"><h2>Week plan</h2><div class="line"></div></div>`));
+  const isOff=(S.data.plan||{}).variant==="offseason";
+  const bk=S.data.planBackup&&S.data.planBackup.days? S.data.planBackup : null;
+  const sw=el(`<div class="card">
+    <div style="font-weight:800">${isOff?"Off-season rugby week is on":"Off-season rugby week"}</div>
+    <div class="mini" style="margin-top:2px">Built around rugby Mon/Wed, hockey Tue, BJJ Thu and a weekend game. Football and camogie skills come out of the week but stay in the library for spring.</div>
+    <div class="sets">
+      ${isOff?"":`<button class="btn sm" id="cOff">Switch to this plan</button>`}
+      ${bk?`<button class="btn sm ghost" id="cOffUndo">↺ Restore plan from ${esc(longDate(bk.savedISO))}</button>`:""}
+    </div>
+  </div>`);
+  m.appendChild(sw);
+  const bOff=sw.querySelector("#cOff"), bUndo=sw.querySelector("#cOffUndo");
+  if(bOff) bOff.onclick=()=>{
+    if(!confirm("Replace the week plan with the off-season rugby week?\n\nYour current plan is saved so you can restore it. Skills library, tests, runs and results are not touched.")) return;
+    const root=db.ref("spaces/"+S.code);
+    root.child("planBackup").set({ days:(S.data.plan||{}).days||{}, variant:(S.data.plan||{}).variant||null, savedISO:todayISO() })
+      .then(()=>root.child("plan").set({ days:offseasonDays(), variant:"offseason" }))
+      .then(()=>toast("Off-season plan is on"));
+  };
+  if(bUndo) bUndo.onclick=()=>{
+    if(!confirm("Put back the week plan saved on "+longDate(bk.savedISO)+"?")) return;
+    const root=db.ref("spaces/"+S.code);
+    root.child("plan").set({ days:bk.days, variant:bk.variant||null }).then(()=>root.child("planBackup").remove()).then(()=>toast("Previous plan restored"));
+  };
   DAYS.forEach(dk=>{
     const dObj=(S.data.plan.days||{})[dk]||{focus:"",items:[],rest:false};
     const items=dayItems(dk);
@@ -1078,8 +1512,9 @@ function renderCoach(m){
     </div>`);
     dayCard.querySelector(".editfocus").onclick=()=>openForm(DAY_FULL[dk]+" focus",[
       {key:"focus",label:"Focus / label",type:"text",value:dObj.focus||""},
-      {key:"rest",label:"Rest day",type:"check",value:!!dObj.rest}
-    ],(v)=>{ db.ref("spaces/"+S.code+"/plan/days/"+dk).update({focus:v.focus||"",rest:!!v.rest}); toast("Saved"); });
+      {key:"rest",label:"Rest day",type:"check",value:!!dObj.rest},
+      {key:"club",label:"Club session day (training elsewhere)",type:"check",value:!!dObj.club}
+    ],(v)=>{ db.ref("spaces/"+S.code+"/plan/days/"+dk).update({focus:v.focus||"",rest:!!v.rest,club:!!v.club}); toast("Saved"); });
 
     items.forEach((it,idx)=>{
       const lib=(S.data.library||{})[it.libId]||{};
@@ -1139,6 +1574,7 @@ function renderCoach(m){
   m.appendChild(tcard);
 
   // data
+  m=mMain;
   m.appendChild(el(`<div class="section-h"><h2>Data</h2><div class="line"></div></div>`));
   const dataCard=el(`<div class="card">
     <button class="btn sm sec full" id="cExport" style="margin-bottom:8px">⬇ Export backup (JSON)</button>
